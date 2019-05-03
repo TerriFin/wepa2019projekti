@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments/fragments :: head(title='Registration')">
+        <meta charset="UTF-8" />
+        <title>Registration</title>
+    </head>
+    <body>
+        <header th:replace="fragments/fragments :: header">
+            <p>navbar</p>
+        </header>
+
+        <h1>Register a new user;</h1>
+        <h2 th:text="${warning}" id="warning">Warning message</h2>
+        <form th:action="@{/register}" method="POST">
+            username: <input type="text" name="username" id="username"/><br/>
+            password: <input type="password" name="password" id="password"/><br/>
+            name: <input type="text" name="name" id="name"/><br/>
+            identifier: <input type="text" name="identifier" id="identifier"/><br/>
+            <input type="submit"/>
+    </form>
+
+</body>
+</html>

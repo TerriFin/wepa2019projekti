@@ -1,13 +1,22 @@
 <!DOCTYPE HTML>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-    <head>
+    <head th:replace="fragments/fragments :: head(title='BestForumEver')">
         <meta charset="UTF-8" />
-        <title>Hello world</title>
+        <title>BestForumEver</title>
     </head>
     <body>
-
-        <h1 th:text="${'Hello ' + message}">Hello world</h1>
-
-
+        <header th:replace="fragments/fragments :: header">
+            <p>navbar</p>
+        </header>
+        
+        <h1 th:if="${account != null}">Hello and welcome <span th:text="${account.username}">user</span> to the best forum mankind has ever devised</h1>
+        <h1 th:if="${account == null}">Hello and welcome to the best forum mankind has ever devised</h1>
+        
+        <h2>Links;</h2>
+        <a th:href="@{/register}">register a new account</a>
+        <br/>
+        <a th:href="@{/posts}">to posts</a>
+        <br/>
+        <a th:if="${account != null}" th:href="@{/users/{test}(test=${account.identifier})}" th:text="${account.identifier}">profile</a>
     </body>
 </html>

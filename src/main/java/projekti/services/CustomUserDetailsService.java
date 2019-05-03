@@ -1,5 +1,7 @@
-package projekti;
+package projekti.services;
 
+import projekti.repositories.AccountRepository;
+import projekti.domain.Account;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
