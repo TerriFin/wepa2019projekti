@@ -25,7 +25,7 @@
                         </ul>
                     </div>
                 </div>
-                <div class="col-6">
+                <div class="col-5">
                     <div class="container">
                         <h2>Posts:</h2>
                         <ul>
@@ -35,14 +35,14 @@
                                 <p th:text="${post.content}" style="word-wrap:break-word">PostContent</p>
 
                                 <ul>
-                                    <li th:each="i, iterStat : ${#numbers.sequence(post.comments.size() - 1, 0, -1)}" th:if="${iterStat.index < 10}">
-                                        <h6 th:text="${post.comments[i].commentor.username}" style="word-wrap:break-word">Commentor</h6>
-                                        <h6 th:text="${post.comments[i].creationDate}" style="word-wrap:break-word">CommentCreationDate</h6>
-                                        <p th:text="${post.comments[i].comment}" style="word-wrap:break-word">comment</p>
+                                    <li th:each="comment, iterStat : ${post.comments}" th:if="${iterStat.index >= iterStat.size-10}">
+                                        <h6 th:text="${comment.commentor.username}" style="word-wrap:break-word">Commentor</h6>
+                                        <h6 th:text="${comment.creationDate}" style="word-wrap:break-word">CommentCreationDate</h6>
+                                        <p th:text="${comment.comment}" style="word-wrap:break-word">comment</p>
                                     </li>
                                 </ul>
 
-                                <form th:action="@{/comment/{identifier}/{postid}/{commentor}(identifier=${targetAccount.identifier}, postid=${post.id}, commentor=${account.username})}" method="POST">
+                                <form th:if="${account != null}" th:action="@{/comment/{identifier}/{postid}/{commentor}(identifier=${targetAccount.identifier}, postid=${post.id}, commentor=${account.username})}" method="POST">
                                     <div class="form-group">
                                         <textarea rows="2" name="comment" class="form-control"></textarea>
                                     </div>
@@ -53,7 +53,7 @@
                             </li>
                         </ul>
 
-                        <form th:action="@{/post/{identifier}/{poster}(identifier=${targetAccount.identifier}, poster=${account.username})}" method="POST">
+                        <form th:if="${account != null}" th:action="@{/post/{identifier}/{poster}(identifier=${targetAccount.identifier}, poster=${account.username})}" method="POST">
                             <h4>Post new post</h4>
                             <div class="form-group">
                                 <textarea rows="10" name="content" class="form-control"></textarea>
@@ -74,10 +74,36 @@
                         </ul>
                     </div>
                 </div>
-                <div class="col-1">
+                <div class="col-2">
                     <div class="container">
                         <h5>Actions</h5>
-
+                        <div th:if="${account != null and targetAccount.username == account.username}" class="container">
+                            <ul>
+                                <li th:each="friendRequest : ${friendRequests}">
+                                    <div class="container">
+                                        <div>Friend Request from: <h6 th:text="${friendRequest.requester.username}"></h6></div>
+                                        <div th:text="${friendRequest.creationDate}"></div>
+                                        <form th:action="@{/addfriend/{senderIdentifier}(senderIdentifier=${friendRequest.requester.identifier})}" method="POST">
+                                            <div class="form-group">
+                                                <input type="submit" value="Add!" class="btn btn-primary"/>
+                                            </div>
+                                        </form>
+                                        <form th:action="@{/declinefriend/{senderIdentifier}(senderIdentifier=${friendRequest.requester.identifier})}" method="POST">
+                                            <div class="form-group">
+                                                <input type="submit" value="Decline" class="btn btn-primary"/>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div th:if="${account != null and targetAccount.username != account.username and isfriend == false}" class="container">
+                            <form th:action="@{/addfriendrequest/{identifier}(identifier=${targetAccount.identifier})}" method="POST">
+                                <div class="form-group">
+                                    <input type="submit" value="Add friend!" class="btn btn-primary"/>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -88,7 +114,7 @@
                     <a th:if="${pagenumber > 0}" th:href="@{/users/{identifier}/{lastpage} (identifier=${account.identifier}, lastpage=${pagenumber - 1})}">Last page</a>
                 </div>
                 <div class="col-8">
-                    
+
                 </div>
                 <div class="col-2">
                     <a th:if="${targetAccount.posts.size() - ((pagenumber + 1) * 25) > 0}" th:href="@{/users/{identifier}/{nextpage} (identifier=${account.identifier}, nextpage=${pagenumber + 1})}">Next page</a>

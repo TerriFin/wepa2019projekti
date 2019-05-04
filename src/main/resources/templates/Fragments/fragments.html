@@ -12,10 +12,13 @@
                 <a class="navbar-brand" th:href="@{/login}">Login</a>
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
+                        <a class="nav-link" th:href="@{/}">Index</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" th:href="@{/register}">Register</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/test}">Test</a>
+                        <a class="nav-link" th:href="@{/users}">Users</a>
                     </li>
                 </ul>
             </nav>
@@ -24,10 +27,13 @@
                 <a class="navbar-brand" th:href="@{/users/{identifier}/0 (identifier=${account.identifier})}" th:text="${account.username}">Placeholder</a>
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
+                        <a class="nav-link" th:href="@{/}">Index</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" th:href="@{/logout}">Logout</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/test}">Test</a>
+                        <a class="nav-link" th:href="@{/users}">Users</a>
                     </li>
                 </ul>
             </nav>

@@ -46,11 +46,10 @@ public class Account extends AbstractPersistable<Long> {
     
     @OneToMany(mappedBy = "imagePoster")
     private List<Image> postedImages = new ArrayList<>();
-
-    @ManyToMany
-    @JoinTable(name = "FRIENDS")
-    private Set<Account> accounts = new HashSet<>();
     
-    @ManyToMany(mappedBy = "accounts")
-    private Set<Account> friends = new HashSet<>();
+    @ManyToMany(mappedBy = "friends")
+    private List<Account> test = new ArrayList<>();
+    
+    @ManyToMany
+    private List<Account> friends = new ArrayList<>();
 }

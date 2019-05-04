@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments/fragments :: head(title='Registration')">
+        <meta charset="UTF-8" />
+        <title>Registration</title>
+    </head>
+    <body>
+        <header th:replace="fragments/fragments :: header">
+            <p>navbar</p>
+        </header>
+
+        <div class="container">
+            <ul>
+                <li th:each="user : ${users}">
+                    <a th:href="@{/users/{identifier}/0(identifier=${user.identifier})}">
+                        <h5 th:text="${user.username}"></h5>
+                        <p th:text="${user.creationDate}"></p>
+                    </a>
+                </li>
+            </ul>
+            <a th:href="@{/}">Back to index</a>
+        </div>
+
+    </body>
+</html>
