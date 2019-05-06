@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
@@ -32,7 +33,10 @@ public class Post extends AbstractPersistable<Long> {
     @ManyToOne
     private Account poster;
     
-    @ElementCollection(fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "likers")
+    private List<Post> test = new ArrayList<>();
+    
+    @ManyToMany
     private List<Account> likers = new ArrayList<>();
     
     @ElementCollection(fetch = FetchType.LAZY)

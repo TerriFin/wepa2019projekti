@@ -1,8 +1,8 @@
 <!DOCTYPE HTML>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-    <head th:replace="fragments/fragments :: head(title='BestForumEver')">
+    <head th:replace="fragments/fragments :: head(title='A cool dude')">
         <meta charset="UTF-8" />
-        <title>BestForumEver</title>
+        <title>A cool dude</title>
     </head>
     <body>
         <header th:replace="fragments/fragments :: header">
@@ -10,22 +10,73 @@
         </header>
 
         <div class="jumbotron text-center" style="margin-bottom:0">
+            <img th:if="${targetAccount.profilePicture != null}" th:src="@{/images/{imageId}(imageId=${targetAccount.profilePicture.id})}" class="img-fluid"/>
+            <p></p>
             <h1 th:text="${targetAccount.username}">username</h1>
         </div>
 
         <div class="container">
             <div class="row">
-                <div class="col-3">
+                <div class="col-4">
                     <div class="container">
                         <h2>Images:</h2>
                         <ul>
                             <li th:each="image : ${targetAccount.postedImages}">
-
+                                <div class="container">
+                                    <img th:src="@{/images/{imageId}(imageId=${image.id})}" class="img-fluid" />
+                                    <p></p>
+                                    <form th:if="${isowner}" th:action="@{/deleteImage/{imageId}(imageId=${image.id})}" method="POST">
+                                        <div class="form-group">
+                                            <span th:text="${image.description}"></span>
+                                            &nbsp;
+                                            <input type="submit" value="Delete" class="btn btn-primary"/>
+                                        </div>
+                                    </form>
+                                    <form th:if="${isowner}" th:action="@{/setProfile/{imageId}(imageId=${image.id})}" method="POST">
+                                        <div class="form-group">
+                                            <input type="submit" value="Make profile picture" class="btn btn-primary"/>
+                                        </div>
+                                    </form>
+                                    <p></p>
+                                    <form th:action="@{/likeImage/{ownerIdentifier}/{imageId}(ownerIdentifier=${targetAccount.identifier}, imageId=${image.id})}" method="POST">
+                                        <div class="form-group">
+                                            <span>Likers: <span th:text="${#lists.size(image.likers)}"></span></span>
+                                            &nbsp;
+                                            <input th:if="${(isfriend == true or isowner == true)}" type="submit" value="Like" class="btn btn-primary"/>
+                                        </div>
+                                    </form>
+                                    <ul>
+                                        <li th:each="comment, iterStat : ${image.comments}" th:if="${iterStat.index >= iterStat.size-10}">
+                                            <h6 th:text="${comment.commentor.username}" style="word-wrap:break-word">Commentor</h6>
+                                            <h6 th:text="${comment.creationDate}" style="word-wrap:break-word">CommentCreationDate</h6>
+                                            <p th:text="${comment.comment}" style="word-wrap:break-word">comment</p>
+                                        </li>
+                                    </ul>
+                                    <form th:if="${account != null and (isfriend == true or isowner == true)}" th:action="@{/commentimage/{identifier}/{imageId}(identifier=${targetAccount.identifier}, imageId=${image.id})}" method="POST">
+                                        <div class="form-group">
+                                            <textarea rows="2" name="comment" class="form-control"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="submit" value="Comment!" class="btn btn-primary"/>
+                                        </div>
+                                    </form>
+                                </div>
                             </li>
                         </ul>
+                        <div th:if="${isowner == true}" class="container">
+                            <form th:action="@{/uploadImage}" method="POST" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <input type="file" name="file"/>
+                                    <p></p>
+                                    <div>Description: <textarea rows="3" name="description" class="form-control"></textarea></div>
+                                    <p></p>
+                                    <input class="btn btn-primary" type="submit" value="Add picture"/>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
-                <div class="col-5">
+                <div class="col-4">
                     <div class="container">
                         <h2>Posts:</h2>
                         <ul>
@@ -33,7 +84,13 @@
                                 <h4 th:text="${post.poster.username}" style="word-wrap:break-word">poster</h4>
                                 <h5 th:text="${post.creationDate}" style="word-wrap:break-word">postCreationDate</h5>
                                 <p th:text="${post.content}" style="word-wrap:break-word">PostContent</p>
-
+                                <form th:action="@{/likepost/{ownerIdentifier}/{postId}(ownerIdentifier=${targetAccount.identifier}, postId=${post.id})}" method="POST">
+                                    <div class="form-group">
+                                        <span>Likers: <span th:text="${#lists.size(post.likers)}"></span></span>
+                                        &nbsp;
+                                        <input th:if="${(isfriend == true or isowner == true)}" type="submit" value="Like" class="btn btn-primary"/>
+                                    </div>
+                                </form>
                                 <ul>
                                     <li th:each="comment, iterStat : ${post.comments}" th:if="${iterStat.index >= iterStat.size-10}">
                                         <h6 th:text="${comment.commentor.username}" style="word-wrap:break-word">Commentor</h6>
@@ -41,8 +98,7 @@
                                         <p th:text="${comment.comment}" style="word-wrap:break-word">comment</p>
                                     </li>
                                 </ul>
-
-                                <form th:if="${account != null}" th:action="@{/comment/{identifier}/{postid}/{commentor}(identifier=${targetAccount.identifier}, postid=${post.id}, commentor=${account.username})}" method="POST">
+                                <form th:if="${account != null and (isfriend == true or isowner == true)}" th:action="@{/commentpost/{identifier}/{postid}(identifier=${targetAccount.identifier}, postid=${post.id})}" method="POST">
                                     <div class="form-group">
                                         <textarea rows="2" name="comment" class="form-control"></textarea>
                                     </div>
@@ -53,7 +109,7 @@
                             </li>
                         </ul>
 
-                        <form th:if="${account != null}" th:action="@{/post/{identifier}/{poster}(identifier=${targetAccount.identifier}, poster=${account.username})}" method="POST">
+                        <form th:if="${account != null and (isfriend == true or isowner == true)}" th:action="@{/post/{identifier}(identifier=${targetAccount.identifier})}" method="POST">
                             <h4>Post new post</h4>
                             <div class="form-group">
                                 <textarea rows="10" name="content" class="form-control"></textarea>
@@ -69,7 +125,9 @@
                         <h2>Friends:</h2>
                         <ul>
                             <li th:each="friend : ${targetAccount.friends}">
-
+                                <a th:href="@{/users/{friendIdentifier}/0(friendIdentifier=${friend.identifier})}">
+                                    <h6 th:text="${friend.username}"></h6>
+                                </a>
                             </li>
                         </ul>
                     </div>
@@ -101,6 +159,17 @@
                             <form th:action="@{/addfriendrequest/{identifier}(identifier=${targetAccount.identifier})}" method="POST">
                                 <div class="form-group">
                                     <input type="submit" value="Add friend!" class="btn btn-primary"/>
+                                </div>
+                            </form>
+                        </div>
+                        <div th:if="${isowner}" class="container">
+                            <h6>Search for friends:</h6>
+                            <form th:action="@{/findusers}" method="POST">
+                                <div class="form-group">
+                                    <textarea rows="1" name="search" class="form-control"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <input type="submit" value="search" class="btn btn-primary"/>
                                 </div>
                             </form>
                         </div>
