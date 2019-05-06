@@ -14,9 +14,5 @@
         
         <h2>Links;</h2>
         <a th:href="@{/register}">register a new account</a>
-        <br/>
-        <a th:href="@{/posts}">to posts</a>
-        <br/>
-        <a th:if="${account != null}" th:href="@{/users/{test}(test=${account.identifier})}" th:text="${account.identifier}">profile</a>
     </body>
 </html>

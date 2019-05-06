@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -28,7 +29,7 @@ public class Image extends AbstractPersistable<Long> {
     @CreationTimestamp
     private LocalDateTime creationDate;
     
-    @Lob
+    @Column(length = 20971520)
     private byte[] content;
     
     @ManyToOne
