@@ -25,9 +25,9 @@
                                 <div class="container">
                                     <img th:src="@{/images/{imageId}(imageId=${image.id})}" class="img-fluid" />
                                     <p></p>
+                                    <span th:text="${image.description}"></span>
                                     <form th:if="${isowner}" th:action="@{/deleteImage/{imageId}(imageId=${image.id})}" method="POST">
                                         <div class="form-group">
-                                            <span th:text="${image.description}"></span>
                                             &nbsp;
                                             <input type="submit" value="Delete" class="btn btn-primary"/>
                                         </div>
